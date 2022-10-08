@@ -7,6 +7,10 @@
 {% block body %}
 <div class="content">
   <h1>Citizens</h1>
+  {% if citizens|length < 1%}
+  <h3>No citizens yet. Create one below.</h3>
+  {% else %}
+
   <table>
     <tr>
       <th>Citizen Name</th>
@@ -17,14 +21,14 @@
         <td>{{ citizen.name }}</td>
         <td>{{ citizen.car }}</td>
         <td>
-          <a href="">Delete</a>
+          <a href="/delete/{{ citizen._id }}">Delete</a>
           <br>
-          <a href="">Update</a>
+          <a href="/update/{{ citizen._id }}">Update</a>
         </td>
       </tr>
       {% endfor %}
   </table>
-
+  {% endif %}
   <form action="/" method="POST">
     <input type="text" name="content" id="content">
     <input type="submit" value="Citizen name">
