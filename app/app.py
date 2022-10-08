@@ -1,39 +1,48 @@
-from crypt import methods
-from flask import Flask, render_template, request, redirect
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, url_for, render_template, request, redirect, session
+from models import db, Citizen
 
 app = Flask(__name__)
+app.secret_key = 'A_LONG_SECRET'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Citizen.sqlite3'
-db = SQLAlchemy(app)
-
-class Citizen(db.Model):
-    _id = db.Column('id', db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
-    car = db.Column(db.String(15), default='Possible')
-
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return f'Citizen {self.name} was registered.'
-
+db.init_app(app)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    if request.method == 'POST':
-        form_content = request.form['content']
-        new_citizen = Citizen(name=form_content)
+    if 'user' in session:
+        user = session['user']
+        if request.method == 'POST':
+            form_content = request.form['content']
+            new_citizen = Citizen(name=form_content)
 
-        try:
-            db.session.add(new_citizen)
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'There was an error'
+            try:
+                db.session.add(new_citizen)
+                db.session.commit()
+                return redirect('/')
+            except:
+                return 'There was an error'
 
+        else:
+            citizens = Citizen.query.order_by(Citizen._id).all()
+            return render_template('index.html', citizens=citizens, user=user)
     else:
-        citizens = Citizen.query.order_by(Citizen._id).all()
-        return render_template('index.html', citizens=citizens)
+        return redirect(url_for('login'))
+
+@app.route('/login/', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        user = request.form['email']
+        session['user'] = user
+        return redirect('/')
+    else:
+        if 'user' in session:
+            return redirect('/')
+
+        return render_template('login.html')
+
+@app.route('/logout/')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('login'))
 
 @app.route('/delete/<int:_id>')
 def delete(_id):

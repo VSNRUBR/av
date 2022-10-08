@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>Nork-Town Cars</title>
+<title>Carford Carshop</title>
 {% endblock %}
 
 {% block body %}
 <div class="content">
-  <h1>Citizens</h1>
+  <h1>Welcome back, {{ user }}</h1>
+  <h2>Citizens</h2>
   {% if citizens|length < 1%}
   <h3>No citizens yet. Create one below.</h3>
   {% else %}
@@ -33,5 +34,8 @@
     <input type="text" name="content" id="content">
     <input type="submit" value="Citizen name">
   </form>
+</div>
+<div>
+  <a href="{{ url_for('logout') }}">Logout</a>
 </div>
 {% endblock %}
