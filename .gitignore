@@ -1,3 +1,4 @@
 *.python-version
 general-info.txt
 __pycache__/
+instance/
