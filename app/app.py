@@ -63,6 +63,10 @@ def delete(id):
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
     person = Citizen.query.get_or_404(id)
+    car_citizen = db.session.query(Citizen.name, Car.id, Car.model, Car.color) \
+        .outerjoin(Car, Citizen.id == Car.citizen_id).order_by(Car.id).all()
+
+    list_car_citizen = [tup for tup in car_citizen if tup[0] == person.name]
 
     if request.method == 'POST':
         new_car = Car(citizen=person)
@@ -78,7 +82,7 @@ def update(id):
             return 'Error on update'
 
     else:
-        return render_template('update.html', citizen=person)
+        return render_template('update.html', citizen=person, list_car_citizen=list_car_citizen)
 
 
 if __name__ == '__main__':
