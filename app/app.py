@@ -69,10 +69,13 @@ def delete_car(id):
 
 @app.route('/delete_citizen/<int:id>')
 def delete_citizen(id):
-    row_to_delete = Citizen.query.get(id)
-    print(row_to_delete.name)
+    citizen_to_delete = Citizen.query.get(id)
+    cars_to_delete = Car.query.filter_by(citizen_id=id).all()
+
     try:
-        db.session.delete(row_to_delete)
+        for car in cars_to_delete:
+            db.session.delete(car)
+        db.session.delete(citizen_to_delete)
         db.session.commit()
 
         return redirect('/')
