@@ -7,7 +7,9 @@
 {% block body %}
 <div class="content">
   <h1>Cars of citizen {{ citizen.id }}-{{ citizen.name }}</h1>
-
+  {% if list_car_citizen[0][1] == None %}
+  <h3>This citizen has no cars. Add one below</h3>
+  {% else %}
   <div class="table">
     <table>
       <tr>
@@ -23,7 +25,7 @@
       </tr>
       {% endfor %}
     </table>
-
+    {% endif %}
   </div>
   <div class="form">
     <form action="/update/{{ citizen.id }}" method="POST">

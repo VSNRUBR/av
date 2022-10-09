@@ -1,4 +1,5 @@
-from flask import Flask, url_for, render_template, request, redirect, session
+import re
+from flask import Flask, url_for, render_template, request, redirect, session, flash
 from models import db, Citizen, Car
 
 app = Flask(__name__)
@@ -69,17 +70,21 @@ def update(id):
     list_car_citizen = [tup for tup in car_citizen if tup[0] == person.name]
 
     if request.method == 'POST':
-        new_car = Car(citizen=person)
-        new_car.color = request.form['colors']
-        new_car.model = request.form['models']
-        person.sale_opportunity = False
+        if len(list_car_citizen) < 3:
+            new_car = Car(citizen=person)
+            new_car.color = request.form['colors']
+            new_car.model = request.form['models']
+            person.sale_opportunity = False
 
-        try:
-            db.session.add(new_car)
-            db.session.commit()
+            try:
+                db.session.add(new_car)
+                db.session.commit()
+                return redirect('#')
+            except:
+                return 'Error on update'
+        else:
+            flash(f'{person.name.upper()} already has 3 cars. Please delete one before adding another.')
             return redirect('#')
-        except:
-            return 'Error on update'
 
     else:
         return render_template('update.html', citizen=person, list_car_citizen=list_car_citizen)
