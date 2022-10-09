@@ -1,6 +1,5 @@
-import re
 from flask import Flask, url_for, render_template, request, redirect, session, flash
-from models import db, Citizen, Car
+from app.models import db, Citizen, Car
 
 app = Flask(__name__)
 app.secret_key = 'A_LONG_SECRET'
