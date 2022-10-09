@@ -1,9 +1,9 @@
 from flask import Flask, url_for, render_template, request, redirect, session
-from models import db, Citizen
+from models import db, Citizen, Car
 
 app = Flask(__name__)
 app.secret_key = 'A_LONG_SECRET'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Citizen.sqlite3'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.sqlite3'
 db.init_app(app)
 
 @app.route('/', methods=['POST', 'GET'])
@@ -22,7 +22,7 @@ def index():
                 return 'There was an error'
 
         else:
-            citizens = Citizen.query.order_by(Citizen._id).all()
+            citizens = Citizen.query.order_by(Citizen.id).all()
             return render_template('index.html', citizens=citizens, user=user)
     else:
         return redirect(url_for('login'))
@@ -45,8 +45,8 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/delete/<int:_id>')
-def delete(_id):
-    row_to_delete = Citizen.query.get_or_404(_id)
+def delete(id):
+    row_to_delete = Citizen.query.get_or_404(id)
 
     try:
         db.session.delete(row_to_delete)
@@ -57,8 +57,8 @@ def delete(_id):
         return 'Error deleting'
 
 @app.route('/update/<int:_id>', methods=['GET', 'POST'])
-def update(_id):
-    to_update = Citizen.query.get_or_404(_id)
+def update(id):
+    to_update = Citizen.query.get_or_404(id)
 
     if request.method == 'POST':
         to_update.name = request.form['content']
