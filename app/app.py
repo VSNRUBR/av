@@ -51,13 +51,14 @@ def logout():
 
 @app.route('/delete/<int:id>')
 def delete(id):
-    row_to_delete = Citizen.query.get_or_404(id)
+    row_to_delete = Car.query.get(id)
+    citizen_id = row_to_delete.citizen_id
 
     try:
         db.session.delete(row_to_delete)
         db.session.commit()
 
-        return redirect('/')
+        return redirect(url_for('update', id=citizen_id))
     except:
         return 'Error deleting'
 
@@ -83,7 +84,7 @@ def update(id):
             except:
                 return 'Error on update'
         else:
-            flash(f'{person.name.upper()} already has 3 cars. Please delete one before adding another.')
+            flash(f'{person.name.capitalize()} already has 3 cars. Please delete one before adding another.')
             return redirect('#')
 
     else:

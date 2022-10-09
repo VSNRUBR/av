@@ -24,4 +24,4 @@ class Car(db.Model):
     citizen_id = db.Column(db.Integer, db.ForeignKey('citizen.id'), nullable=False)
 
     def __repr__(self):
-        return f'Car {self._id} was registered.'
+        return f'Car {self.id} was registered.'

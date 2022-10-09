@@ -6,6 +6,15 @@
 
 {% block body %}
 <div class="content">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="flashes">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  {% endwith %}
   <h1>Cars of citizen {{ citizen.id }}-{{ citizen.name }}</h1>
   {% if list_car_citizen[0][1] == None %}
   <h3>This citizen has no cars. Add one below</h3>
@@ -22,6 +31,9 @@
         <td>{{ tup[1] }}</td>
         <td>{{ tup[2] }}</td>
         <td>{{ tup[3] }}</td>
+        <td>
+          <a href="/delete/{{ tup[1] }}">Delete car</a>
+        </td>
       </tr>
       {% endfor %}
     </table>
