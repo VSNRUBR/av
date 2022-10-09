@@ -26,6 +26,9 @@
         <td>
           <a href="/update/{{ citizen.id }}">Check cars</a>
         </td>
+        <td>
+          <a href="/delete_citizen/{{ citizen.id }}" onclick="return confirm('Are you sure you want to delete this item?');">Delete citizen</a>
+        </td>
       </tr>
       {% endfor %}
   </table>
