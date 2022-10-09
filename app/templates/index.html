@@ -6,6 +6,15 @@
 
 {% block body %}
 <div class="content">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul class="flashes">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
   <h1>Welcome back, {{ user }}</h1>
   <h2>Citizens</h2>
   {% if citizens|length < 1%}
@@ -33,7 +42,8 @@
       {% endfor %}
   </table>
   {% endif %}
-  <form action="/" method="POST">
+  <script type=text/javascript src="{{ url_for('static', filename='main.js') }}"></script>
+  <form name="form1" action="/" method="POST" onsubmit="required()">
     <input type="text" name="content" id="content">
     <input type="submit" value="Add citizen">
   </form>

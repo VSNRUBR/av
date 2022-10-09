@@ -1,8 +1,12 @@
 from flask import Flask, url_for, render_template, request, redirect, session, flash
 from models import db, Citizen, Car
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'A_LONG_SECRET'
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.sqlite3'
 db.init_app(app)
 
@@ -15,6 +19,10 @@ def index():
             new_citizen = Citizen(name=form_content, sale_op=True)
 
             try:
+                if new_citizen.name == '':
+                    flash('Name was not provided. Please, enter a valid name.')
+                    return redirect('#')
+
                 db.session.add(new_citizen)
                 db.session.commit()
                 return redirect('/')
@@ -26,10 +34,6 @@ def index():
             car_citizen = db.session.query(Citizen.name, db.func.count(Car.citizen_id)) \
                 .outerjoin(Car, Citizen.id == Car.citizen_id).group_by(Citizen.name).all()
             car_citizen = dict(car_citizen)
-
-            # for k, v in car_citizen.items():
-            #     if v == 0:
-
 
             return render_template('index.html', citizens=citizens, user=user,
                                     car_citizen=car_citizen)
