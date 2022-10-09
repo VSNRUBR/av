@@ -12,7 +12,7 @@ def index():
         user = session['user']
         if request.method == 'POST':
             form_content = request.form['content']
-            new_citizen = Citizen(name=form_content)
+            new_citizen = Citizen(name=form_content, sale_op=True)
 
             try:
                 db.session.add(new_citizen)
@@ -23,7 +23,11 @@ def index():
 
         else:
             citizens = Citizen.query.order_by(Citizen.id).all()
-            return render_template('index.html', citizens=citizens, user=user)
+            car_citizen = db.session.query(Citizen.name, db.func.count(Car.citizen_id)) \
+                .outerjoin(Car, Citizen.id == Car.citizen_id).group_by(Citizen.name).all()
+            car_citizen = dict(car_citizen)
+            return render_template('index.html', citizens=citizens, user=user,
+                                    car_citizen=car_citizen)
     else:
         return redirect(url_for('login'))
 
@@ -44,7 +48,7 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
 
-@app.route('/delete/<int:_id>')
+@app.route('/delete/<int:id>')
 def delete(id):
     row_to_delete = Citizen.query.get_or_404(id)
 
@@ -56,21 +60,25 @@ def delete(id):
     except:
         return 'Error deleting'
 
-@app.route('/update/<int:_id>', methods=['GET', 'POST'])
+@app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
-    to_update = Citizen.query.get_or_404(id)
+    person = Citizen.query.get_or_404(id)
 
     if request.method == 'POST':
-        to_update.name = request.form['content']
+        new_car = Car(citizen=person)
+        new_car.color = request.form['colors']
+        new_car.model = request.form['models']
+        person.sale_opportunity = False
 
         try:
+            db.session.add(new_car)
             db.session.commit()
-            return redirect('/')
+            return redirect('#')
         except:
             return 'Error on update'
 
     else:
-        return render_template('update.html', citizen=to_update)
+        return render_template('update.html', citizen=person)
 
 
 if __name__ == '__main__':

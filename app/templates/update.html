@@ -6,14 +6,25 @@
 
 {% block body %}
 <div class="content">
-  <h1>Update citizen</h1>
-
+  <h1>Cars of citizen {{ citizen.name }}</h1>
   <div class="form">
-    <form action="/update/{{ citizen._id }}" method="POST">
-      <input type="text" name="content" id="content" value="{{ citizen.name }}">
-      <input type="submit" value="Change citizen name">
+    <form action="/update/{{ citizen.id }}" method="POST">
+      <label for="models">Choose a model:</label>
+      <select id="models" name="models">
+        <option value="hatch">Hatch</option>
+        <option value="sedan">Sedan</option>
+        <option value="convertible">Convertible</option>
+      </select>
+      <label for="colors">Choose a color:</label>
+      <select id="colors" name="colors">
+        <option value="yellow">Yellow</option>
+        <option value="blue">Blue</option>
+        <option value="grey">Grey</option>
+      </select>
+      <input type="submit" value="Register Car">
     </form>
   </div>
+  <a href="/">Home</a>
 </div>
 
 {% endblock %}

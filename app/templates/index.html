@@ -15,16 +15,18 @@
   <table>
     <tr>
       <th>Citizen Name</th>
-      <th>Cars</th>
+      <th>Number of Cars</th>
+      <th>Sale Opportunity</th>
     </tr>
       {% for citizen in citizens %}
       <tr>
         <td>{{ citizen.name }}</td>
-        <td>{{ citizen.car }}</td>
+        <td>{{ car_citizen[citizen.name] }}</td>
+        <td>{{ citizen.sale_opportunity }}</td>
         <td>
-          <a href="/delete/{{ citizen._id }}">Delete</a>
+          <a href="/delete/{{ citizen.id }}">Delete</a>
           <br>
-          <a href="/update/{{ citizen._id }}">Update</a>
+          <a href="/update/{{ citizen.id }}">Update</a>
         </td>
       </tr>
       {% endfor %}
