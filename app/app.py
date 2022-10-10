@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET_KEY')
+app.secret_key = os.getenv('FLASK_SECRET_KEY') # Para rodar sem .dotenv, substituir por qualquer str
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///main.sqlite3'
 db.init_app(app)
 
